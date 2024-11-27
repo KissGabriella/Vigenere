@@ -1,6 +1,7 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import filedialog, messagebox
 from vigenere import Vigenere
+#from fajl_kezeles import mentes_fajlba
 
 class VigenereApp:
     def __init__(self):
@@ -25,6 +26,7 @@ class VigenereApp:
         gomb_keret.pack(pady=10)
         tk.Button(gomb_keret, text="Titkositas", command=self.titkositas_gomb).pack(side=tk.LEFT, padx=5)
         tk.Button(gomb_keret, text="Visszafejtes", command=self.visszafejtes_gomb).pack(side=tk.LEFT, padx=5)
+        tk.Button(gomb_keret, text="Mentés fájlba", command=self.mentes_fajlba).pack(side=tk.LEFT, padx=5)
 
         tk.Label(self.ablak, text="Eredmeny:").pack(pady=5)
         self.eredmeny_kimenet = tk.Text(self.ablak, height=5, width=50)
@@ -47,6 +49,8 @@ class VigenereApp:
         self.eredmeny_kimenet.delete("1.0", tk.END)
         self.eredmeny_kimenet.insert(tk.END, eredmeny)
 
+        #mentes_fajlba(kulcs, szoveg, eredmeny)
+
     def visszafejtes_gomb(self):
         szoveg = self.szoveg_bemenet.get("1.0", tk.END).strip()
         kulcs = self.kulcs_bemenet.get().strip()
@@ -63,6 +67,32 @@ class VigenereApp:
         eredmeny = vigenere.visszafejtes(szoveg)
         self.eredmeny_kimenet.delete("1.0", tk.END)
         self.eredmeny_kimenet.insert(tk.END, eredmeny)
+
+        #mentes_fajlba(kulcs, szoveg, eredmeny)
+
+    def mentes_fajlba(self):
+        kulcs = self.kulcs_bemenet.get().strip()
+        eredeti_szoveg = self.szoveg_bemenet.get("1.0", tk.END).strip()
+        eredmeny_szoveg = self.eredmeny_kimenet.get("1.0", tk.END).strip()
+
+        if not kulcs or not eredeti_szoveg or not eredmeny_szoveg:
+            messagebox.showwarning("Figyelmeztetés", "Nincs elég adat a fájl mentéséhez!")
+            return
+
+        fajlnev = filedialog.asksaveasfilename(
+            initialfile=f"{kulcs}.txt",
+            defaultextension=".txt",
+            filetypes=[("Szövegfájlok", "*.txt"), ("Minden fájl", "*.*")]
+        )
+
+        if fajlnev:
+            try:
+                with open(fajlnev, "a", encoding="utf-8") as fajl:
+                    fajl.write(f"Eredeti szöveg:\n{eredeti_szoveg}\n")
+                    fajl.write(f"Eredmény:\n{eredmeny_szoveg}\n\n")
+                messagebox.showinfo("Siker", f"A fájl mentve: {fajlnev}")
+            except Exception as e:
+                messagebox.showerror("Hiba", f"A fájl mentése nem sikerült: {e}")
 
     def futtat(self):
         self.ablak.mainloop()
