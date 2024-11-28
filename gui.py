@@ -45,6 +45,7 @@ class VigenereApp:
         eredmeny = vigenere.titkositas(szoveg)
         self.eredmeny_kimenet.delete("1.0", tk.END)
         self.eredmeny_kimenet.insert(tk.END, eredmeny)
+        self.eredmeny_kimenet.config(state="disabled")
 
 
     def visszafejtes_gomb(self):
@@ -63,6 +64,7 @@ class VigenereApp:
         eredmeny = vigenere.visszafejtes(szoveg)
         self.eredmeny_kimenet.delete("1.0", tk.END)
         self.eredmeny_kimenet.insert(tk.END, eredmeny)
+        self.eredmeny_kimenet.config(state="disabled")
 
 
     def mentes_fajlba(self):
